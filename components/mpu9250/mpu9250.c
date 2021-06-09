@@ -21,6 +21,7 @@
 
 #include "i2c-easy.h"
 #include "mpu9250.h"
+#include "ak8963.h"
 
 #define I2C_MASTER_SCL_IO 22      /*!< gpio number for I2C master clock */
 #define I2C_MASTER_SDA_IO 21     /*!< gpio number for I2C master data  */
@@ -34,7 +35,7 @@ calibration_t *cal;
 static float gyro_inv_scale = 1.0;
 static float accel_inv_scale = 1.0;
 
-//static esp_err_t enable_magnetometer(void);
+static esp_err_t enable_magnetometer(void);
 
 esp_err_t i2c_mpu9250_init(calibration_t *c)
 {
@@ -73,8 +74,8 @@ esp_err_t i2c_mpu9250_init(calibration_t *c)
   vTaskDelay(10 / portTICK_RATE_MS);
 
   ESP_LOGD(TAG, "END of MPU9250 initialization");
-
- // ESP_ERROR_CHECK(enable_magnetometer());
+  
+  ESP_ERROR_CHECK(enable_magnetometer());
 
   print_settings();
 
@@ -252,7 +253,7 @@ esp_err_t get_accel_gyro(vector_t *va, vector_t *vg)
   return ESP_OK;
 }
 
-/*
+
 esp_err_t get_accel_gyro_mag(vector_t *va, vector_t *vg, vector_t *vm)
 {
   esp_err_t ret;
@@ -274,7 +275,7 @@ esp_err_t get_mag_raw(uint8_t bytes[6])
 {
   return ak8963_get_mag_raw(bytes);
 }
-*/
+
 esp_err_t get_device_id(uint8_t *val)
 {
   return i2c_read_byte(I2C_MASTER_NUM, MPU9250_I2C_ADDR, MPU9250_WHO_AM_I, val);
@@ -304,7 +305,7 @@ esp_err_t get_temperature_celsius(float *val)
 
   return ESP_OK;
 }
-/*
+
 static esp_err_t enable_magnetometer(void)
 {
   ESP_LOGI(TAG, "Enabling magnetometer");
@@ -329,7 +330,7 @@ static esp_err_t enable_magnetometer(void)
     return ESP_ERR_INVALID_STATE;
   }
 }
-*/
+
 esp_err_t get_bypass_enabled(bool *state)
 {
   uint8_t bit;

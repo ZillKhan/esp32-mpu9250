@@ -159,10 +159,10 @@ esp_err_t set_i2c_master_mode(bool state);
 
 esp_err_t get_accel(vector_t *v);
 esp_err_t get_gyro(vector_t *v);
-//esp_err_t get_mag(vector_t *v);
+esp_err_t get_mag(vector_t *v);
 esp_err_t get_accel_gyro(vector_t *va, vector_t *vg);
-//esp_err_t get_accel_gyro_mag(vector_t *va, vector_t *vg, vector_t *vm);
-//esp_err_t get_mag_raw(uint8_t bytes[6]);
+esp_err_t get_accel_gyro_mag(vector_t *va, vector_t *vg, vector_t *vm);
+esp_err_t get_mag_raw(uint8_t bytes[6]);
 
 void print_settings(void);
 

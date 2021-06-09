@@ -14,6 +14,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
+#include "esp_err.h"
 #include "esp_log.h"
 #include "i2c-easy.h"
 #include"mpu9250.h"
@@ -43,6 +44,17 @@ static void transform_accel_gyro(vector_t *v)
   v->z = -y;
 }
 
+static void transform_mag(vector_t *v)
+{
+  float x = v->x;
+  float y = v->y;
+  float z = v->z;
+
+  v->x = -y;
+  v->y = z;
+  v->z = -x;
+}
+
 
 void run_imu(void)
 {
@@ -51,18 +63,23 @@ void run_imu(void)
   float temp;
   while (true)
   {
-    vector_t va, vg;
+    vector_t va, vg, vm;
 
     // Get the Accelerometer, Gyroscope.
-    ESP_ERROR_CHECK(get_accel_gyro(&va, &vg));
+    //ESP_ERROR_CHECK(get_accel_gyro(&va, &vg));
+
+    // Get the Accelerometer, Gyroscope and Magnetometer values.
+    ESP_ERROR_CHECK(get_accel_gyro_mag(&va,&vg,&vm));
 
     // Transform these values to the orientation of our device.
     transform_accel_gyro(&va);
     transform_accel_gyro(&vg);
+    transform_mag(&vm);
     ESP_ERROR_CHECK(get_temperature_celsius(&temp));
 
     ESP_LOGI(TAG, "Accel X: %2.3f, Accel Y: %2.3f, Accel Z: %2.3f, Temp %2.3f°C", va.x, va.y, va.z, temp);
     ESP_LOGI(TAG, "Gyro X: %2.3f, Gyro Y: %2.3f, Gyro Z: %2.3f, Temp %2.3f°C", vg.x, vg.y, vg.z, temp);
+    ESP_LOGI(TAG, "Magn X: %2.3f, Magn Y: %2.3f, Magn Z: %2.3f, Temp %2.3f°C", vm.x, vm.y, vm.z, temp);
     vTaskDelay(200 / portTICK_RATE_MS);
   }
 }
