@@ -18,7 +18,7 @@
 #include "esp_log.h"
 #include "i2c-easy.h"
 #include"mpu9250.h"
-
+#include "calibrate.h"
 
 #define TAG "mpu9250"
 #define I2C_MASTER_NUM I2C_NUM_0 /*!< I2C port number for master dev */
@@ -90,6 +90,7 @@ static void imu_task(void *arg)
 #ifdef CONFIG_CALIBRATION_MODE
   calibrate_gyro();
   calibrate_accel();
+  calibrate_mag();
 #else
   run_imu();
 #endif

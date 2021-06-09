@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "mpu9250.h": "c"
+        "mpu9250.h": "c",
+        "common.h": "c",
+        "calibrate.h": "c"
     }
 }
